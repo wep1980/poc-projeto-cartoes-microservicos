@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:clientes
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  application:
+    name: msclientes
+
+server:
+  port: 0 # com o 0 a aplicacao sobe em uma porta randomica, as portas serao vistas no eureka server
+
+eureka:
+  client:
+    service-url: # registrando se no eureka server
+      defaultZone: http://localhost:8761/eureka
+  instance: # config do nome dessa instancia, esse e o nome da instancia dentro do eureka, as intancias n�o podem ter o mesmo nome
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#
+#logging:
+#  file:
+#    name: ./logs/log-file.log
+
