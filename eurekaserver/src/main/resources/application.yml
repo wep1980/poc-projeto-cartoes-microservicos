@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: eurekaserver # nome da aplicação. a comunicação e feita atraves desse nome
+  security:
+    basic:
+      enabled: true
+    user:
+      name: cursoms-eureka-user
+      password: ecok-usr-eeuramssur
+
+server:
+  port: 8761
+
+# Aqui no eureka sera feito o registro de varios clients (microserviços)
+eureka:
+  client:
+    register-with-eureka: false # config para ele não se auto registrar, quem vai fazer esse registro e o gateway
+    fetch-registry: false # não buscar o registro dos microserviços, quem faz isso e o gateway

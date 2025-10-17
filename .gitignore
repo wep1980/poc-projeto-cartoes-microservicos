@@ -1,0 +1,33 @@
+# === PASTAS LOCAIS GRANDES ===
+/arquivos do curso/
+**/arquivos do curso/
+
+# === MAVEN / BUILD ===
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# === IDEs ===
+**/.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# === LOGS / TEMP ===
+*.log
+*.tmp
+*.bak
+
+# === SO ===
+.DS_Store
+Thumbs.db
+
+# Windows device names (fantasmas)
+NUL
+nul
+CON
+PRN
+AUX
+COM1
+LPT1
