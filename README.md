@@ -153,65 +153,110 @@ O ciclo de execução do projeto rodando com docker:
 
 ---
 
+# 📡 API Endpoints
 
+## Clientes (`ClienteController`)
+Base: `/clientes`
 
-  COMANDOS DOCKER UTEIS
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/clientes` | `Cliente` | Cadastra um novo cliente |
+| GET | `/clientes/{codigo}` | — | Consulta cliente por código |
+| DELETE | `/clientes/{codigo}` | — | Inativa o cliente (não deleta físico) |
 
-  
-  - Rodando o eureka dentro da network -> docker run --name ms-eureka-server -p 8761:8761 --network ms-network eureka-server
-  
-   docker run --name ms-rabbitmq -p 5672:5672 -p 15672:15672 --network ms-network rabbitmq:3.9-management  -> criando o container rabbitmq
-  
-  - docker build --tag ms-eureka-server .   -> fazendo o build da imagem com nome (ms-eureka-server) atravez do dockerfile. OBS : precisa estar no diretorio do arquivo dockerfile
-  - docker images  -> verifica todas as imagens que eu tenho
-  - docker run --name <nome que quiser> -p 8761:8761 <nome da imagem>  EXEMPLO: docker run --name ms-eureka-server -p 8761:8761 eureka-server
-  
-  - docker build --tag imagem-mscartoes .   -> fazendo o build da imagem com nome (imagem-mscartoes) atravez do dockerfile. OBS : precisa estar no diretorio do arquivo dockerfile
-  - docker run --name <nome que quiser> -p nao necessario:nao necessario <nome da imagem>   nao foi necessario colocar a porta que esse container sobe com porta
-    randomica de aacordo com a config do application.yml EXEMPLO: docker run --name mscartoes imagem-mscartoes
-  - docker run --name mscartoes --network ms-network  imagem-mscartoes  -> subindo o container do ms cartoes dentro da network criada
-  - docker run --name mscartoes --network ms-network -e RABBITMQ_SERVER=ms-rabbitmq -e EUREKA_SERVER=ms-eureka-server -d imagem-mscartoes  -> subindo o container do ms cartoes dentro da network criada
-    e com variaveis de ambiente
-	
-  - docker build --tag imagem-msclientes .  -> fazendo o build da imagem com nome (imagem-msclientes) atravez do dockerfile. OBS : precisa estar no diretorio do arquivo dockerfile
-  - docker run --name msclientes --network ms-network -e EUREKA_SERVER=ms-eureka-server -d imagem-msclientes -> subindo o container do ms cartoes dentro da network criada
-    e com variaveis de ambient
-	
-	docker build --tag imagem-msavaliador-credito .   ->
-	docker run --name ms-avaliador-credito --network ms-network -e RABBITMQ_SERVER=ms-rabbitmq -e EUREKA_SERVER=ms-eureka-server imagem-msavaliador-credit  ->
-	
-	docker run -p 8081:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin --network ms-network --name mskeycloak quay.io/keycloak/keycloak:18.0.0 start-dev
-  -	acessar o keycloak -> http://localhost:8081/
-  - importar o arquivo realm-export.json  
-	
-	docker build --tag imagem-msgateway .
-	
-	COMANDO MODIFICADO PARA A PORTA 8080 DO KEYCLOAK, POIS ELE ESTA DENTRO DA NETWORK
-	docker run --name ms-gateway -p 8080:8080 -e EUREKA_SERVER=ms-eureka-server -e EUREKA_USUARIO=senha-eureka -e EUREKA_SENHA=senha-eureka -e KEYCLOAK_SERVER=mskeycloak -e KEYCLOAK_PORT=8080 --network ms-network imagem-msgateway
-	
-	COMANDO COM A PORTA 8081 DO KEYCLOAK PARA SER ACESSADO FORA DA NETWORK
-	docker run --name ms-gateway -p 8080:8080 -e EUREKA_SERVER=ms-eureka-server -e EUREKA_USUARIO=senha-eureka -e EUREKA_SENHA=senha-eureka -e KEYCLOAK_SERVER=mskeycloak -e KEYCLOAK_PORT=8081 --network ms-network imagem-msgateway
-	
-	acessar o keycloak no seu helm (mskeycloakrealm) ir em credentials e gerar uma nova secret, para pode pegar o token no postman
-	
-	subir mais instancias de um microserviço, no exemplo e do clientes, o nome do microserviço precisa ser diferente do que ja existe, nesse caso eu chamei de msclientes-instancia_2 e foi adicionado o -P para subir em uma porta aleatoria
-	docker run --name msclientes-instancia_2 -P --network ms-network -e EUREKA_SERVER=ms-eureka-server -d imagem-msclientes
-	
+**Exemplo `Cliente`**
+```json
+{
+  "nome": "Carlos da Silva",
+  "cpf": "12345678900",
+  "email": "carlos.silva@email.com",
+  "endereco": "Rua das Flores, 120 - São Paulo"
+}
+```
 
-    
-  
-  - comando para criar network e fazer os containers docker conversarem entre si 
-  
-- comando para subir outras instancias mo terminal dentro do intellij ./mvnw spring-boot:run
-- seguindo o modelo DDD, domain driven design, modelo orientado a dominio
+---
 
+## Produtos (`ProdutoController`)
+Base: `/produtos`
 
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/produtos` | `Produto` | Cadastra um novo produto |
+| GET | `/produtos/{codigo}` | — | Consulta produto por código |
+| DELETE | `/produtos/{codigo}` | — | Inativa o produto (não deleta físico) |
 
-comando docker rabbitmq      -> docker run -it --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
-comando docker para keycloak -> docker run --name mskeycloak -p 8081:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:18.0.0 start-dev
-para acessar localhost:15672
-user : guest
-senha : guest
+**Exemplo `Produto`**
+```json
+{
+  "nome": "Notebook Dell XPS 13",
+  "descricao": "Notebook 13'' i7 16GB RAM",
+  "valorUnitario": 8500.00,
+  "estoque": 20
+}
+```
+
+---
+
+## Pedidos (`PedidoController`)
+Base: `/pedidos`
+
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/pedidos` | `NovoPedidoDTO` | Cria um novo pedido |
+| GET | `/pedidos/{codigo}` | — | Retorna detalhes do pedido |
+| POST | `/pedidos/pagamentos` | `AdicaoNovoPagamentoDTO` | Adiciona um novo pagamento ao pedido |
+
+**Exemplo `NovoPedidoDTO`**
+```json
+{
+  "codigoCliente": 1,
+  "dadosPagamento": {
+    "metodo": "PIX"
+  },
+  "itens": [
+    { "codigoProduto": 1, "quantidade": 1, "valorUnitario": 8500.00 }
+  ]
+}
+```
+
+**Exemplo `AdicaoNovoPagamentoDTO`**
+```json
+{
+  "codigoPedido": 1058,
+  "dados": "chave-pagamento-gerada-pelo-sistema",
+  "tipoPagamento": "CREDIT"
+}
+```
+
+---
+
+## Callback de Pagamento (`RecebimentoCallbackPagamentoController`)
+Base: `/pedidos/callback-pagamentos`
+
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/pedidos/callback-pagamentos` | `RecebimentoCallbackPagamentoDTO` | Webhook para atualizar status do pagamento |
+
+**Exemplo `RecebimentoCallbackPagamentoDTO`**
+```json
+{
+  "codigo": 1058,
+  "chavePagamento": "d5c2f33b-199a-48e5-91a1-82f3bb07e9b1",
+  "status": true,
+  "observacoes": "Pagamento confirmado via CREDIT"
+}
+```
+
+---
+
+## Faturamento / Bucket (`BucketController`)
+Base: `/bucket`
+
+| Método | Rota | Corpo | Descrição |
+|-------:|------|-------|-----------|
+| POST | `/bucket` | `multipart/form-data` | Envia arquivo para o bucket |
+| GET | `/bucket?filename=arquivo` | — | Retorna (redirect 301) para URL do arquivo |
+
 ---
 
 # 🤝 Colaboradores
