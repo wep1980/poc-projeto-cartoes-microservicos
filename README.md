@@ -11,10 +11,6 @@
 [H2]:https://img.shields.io/badge/h2%20database-%23005C8C.svg?style=for-the-badge&logo=h2&logoColor=white
 [SPRING_SECURITY]:https://img.shields.io/badge/spring%20security-%236DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white
 
-
-
-
-
 <h1 align="center" style="font-weight: bold;">POC Projeto Cartões Microserviços 💻</h1>
 
 ![java][JAVA_BADGE]
@@ -30,25 +26,27 @@
 ![postman][POSTMAN]
 ![license][LICENSE__BADGE]
 
-<br/>
-<br/>
+---
 
-
-<details open="open">
-<summary>📘 Índice</summary>
-
-- [🧰 Pré-requisitos](#-pré-requisitos)
-- [🐳 Docker serviços e comandos úteis](#-serviços-do-ambiente-docker)
-- [🧩 Fluxo Completo do Sistema](#-fluxo-completo-do-sistema)
-- [📡 API Endpoints](#-api-endpoints)
-- [🤝 Colaboradores](#-colaboradores)
-- [📫 Como Contribuir](#-como-contribuir)
-- [📄 Licença](#-licença)
-
-</details>
+# 📘 Índice
+- [🧰 Pré-requisitos](#pre-requisitos)
+- [🐳 Docker serviços e comandos úteis](#docker)
+- [🧩 Fluxo Completo do Sistema](#fluxo)
+- [⚙️ Arquitetura dos Microserviços](#arquitetura)
+- [📡 API Endpoints](#endpoints)
+  - [msclientes](#msclientes)
+  - [mscartoes](#mscartoes)
+  - [msavaliadorcredito](#msavaliadorcredito)
+- [🔐 Autenticação via Keycloak (Gateway)](#auth)
+- [🚀 Execução via Docker](#execucao-docker)
+- [🤝 Colaboradores](#colaboradores)
+- [📫 Como Contribuir](#como-contribuir)
+- [📄 Licença](#licenca)
+- [🧠 Autor](#autor)
 
 ---
 
+<a id="pre-requisitos"></a>
 # 🧰 Pré-requisitos
 
 - **Java 21+**
@@ -58,6 +56,7 @@
 
 ---
 
+<a id="docker"></a>
 # 🐳 Docker serviços e comandos úteis
 
 execute os seguintes comandos para o funcionamento do sistema :
@@ -94,171 +93,177 @@ execute os seguintes comandos para o funcionamento do sistema :
 - comando executado no terminal na pasta raiz do projeto desejado para subir mais instancias : ./mvnw spring-boot:run
 ```
 
+---
+
+<a id="fluxo"></a>
 # 🧩 Fluxo Completo do Sistema
 
 <p align="center">
-<h4 align="center" style="font-weight: bold;">Funcionamento do Eureka e Gateway</h4>
+<h5 style="font-weight: bold;">Funcionamento do Eureka e Gateway</h5>
     <img src="fluxo1.png" alt="Keycloak Local" width="800">
 </p>
 <p align="center">
-<h4 align="center" style="font-weight: bold;">Fluxo RabbitMQ</h4>
+<h5 style="font-weight: bold;">Fluxo RabbitMQ</h5>
     <img src="fluxo2.png" alt="Keycloak Local" width="800">
 </p>
 
 O ciclo de execução do projeto local segue esta sequência:
 
-| Etapa | Descrição                                                                                                                                                                                             |
-|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1️⃣ | **Executar o ambiente**: criação da network e dos containers rabbitmq e keycloak                                                                                                                      |
+| Etapa | Descrição |
+|-------|-----------|
+| 1️⃣ | **Executar o ambiente**: criação da network e dos containers rabbitmq e keycloak |
 | 2️⃣ | Criar um helm no keycloak para rodar local importando o arquivo realm-export.json que fica conforme imagem abaixo, para acessar (http://localhost:8081/admin/master/console/#/realms/mskeycloakrealm) |
-| 3️⃣ | Subir todos projetos começando pelo eureka, para acessar (http://localhost:8761), <br/>name: cursoms-eureka-user<br/> password: ecok-usr-eeuramssur<br/>Subir por ultimo o gateway                    |
-| 4️⃣ | Obter o token com as informações que estão no seu keycloak conforme imagem abaixo utilizando o postman.                                                                                               |
-| 5️⃣ | **Criar um Cliente**: `POST /clientes`  **Criar um Cartão**: `POST /cartoes` Exemplo imagem abaixo criando um cliente                                                                                 |
-| 6️⃣ | Executar os outros endpoints                                                                                                                                                                          |
-| 7️⃣ | Acesso ao banco de dados em memoria H2, http://localhost:porta/h2-console<br/>Acesso ao swagger, dentro do eureka vc acessa a url do microserviço desejado e vai abrir uma url parecida com essa  http://desktop-7uk6l4e:2538/actuator/info voce substitue o /actuator/info por /swagger-ui.html                                                                                                     |
+| 3️⃣ | Subir todos projetos começando pelo eureka, para acessar (http://localhost:8761), <br/>name: cursoms-eureka-user<br/> password: ecok-usr-eeuramssur<br/>Subir por ultimo o gateway |
+| 4️⃣ | Obter o token com as informações que estão no seu keycloak conforme imagem abaixo utilizando o postman. |
+| 5️⃣ | **Criar um Cliente**: `POST /clientes`  **Criar um Cartão**: `POST /cartoes` Exemplo imagem abaixo criando um cliente |
+| 6️⃣ | Executar os outros endpoints |
+| 7️⃣ | Acesso ao banco de dados em memoria H2, http://localhost:porta/h2-console<br/>Acesso ao swagger, dentro do eureka vc acessa a url do microserviço desejado e vai abrir uma url parecida com essa  http://desktop-7uk6l4e:2538/actuator/info voce substitue o /actuator/info por /swagger-ui.html |
 
 <p align="center">
-<h4 align="center" style="font-weight: bold;">Keycloak Local</h4>
+<h5 style="font-weight: bold;">Keycloak Local</h5>
     <img src="keycloak-local.png" alt="Keycloak Local" width="800">
 </p>
 <p align="center">
-<h4 align="center" style="font-weight: bold;">Postman token</h4>
+<h5 style="font-weight: bold;">Postman Token</h5>
     <img src="postman.png" alt="Keycloak Local" width="800">
 </p>
 <p align="center">
-<h4 align="center" style="font-weight: bold;">Postman - criando cliente</h4>
+<h5 style="font-weight: bold;">Postman - Criando Cliente</h5>
     <img src="cliente.png" alt="Keycloak Local" width="800">
 </p>
 
 O ciclo de execução do projeto rodando com docker:
 
-| Etapa | Descrição                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1️⃣ | Executar o ambiente: criação da network e dos containers rabbitmq e keycloak. com a execução dos comandos abaixo :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|       | docker network create ms-network<br/>docker run --name ms-rabbitmq -p 5672:5672 -p 15672:15672 --network ms-network rabbitmq:3.9-management<br/>docker run -p 8081:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin --network ms-network --name mskeycloak quay.io/keycloak/keycloak:18.0.0 start-dev<br/> Criar o helm conforme imagem abaixo.<br/>Fazer o build dos arquivos dockerfile, Observação : precisa estar no diretorio do arquivo dockerfile<br/>Comandos : <br/>docker build --tag ms-eureka-server .<br/>docker run --name ms-eureka-server -p 8761:8761 --network ms-network eureka-server<br/>docker build --tag imagem-mscartoes .<br/>docker run --name mscartoes --network ms-network  imagem-mscartoes   --> Observação : nao foi necessario configurar a porta nesse container nem nos demais pois eles sobem com porta randomica de aacordo com suas configs do application.yml<br/>docker build --tag imagem-msclientes .<br/>docker run --name msclientes --network ms-network -e EUREKA_SERVER=ms-eureka-server imagem-msclientes<br/>docker build --tag imagem-msavaliador-credito .<br/>docker run --name ms-avaliador-credito --network ms-network -e RABBITMQ_SERVER=ms-rabbitmq -e EUREKA_SERVER=ms-eureka-server imagem-msavaliador-credito<br/>docker build --tag imagem-msgateway .<br/>docker run --name ms-gateway -p 8080:8080 -e EUREKA_SERVER=ms-eureka-server -e EUREKA_USUARIO=senha-eureka -e EUREKA_SENHA=senha-eureka -e KEYCLOAK_SERVER=mskeycloak -e KEYCLOAK_PORT=8080 --network ms-network imagem-msgateway |
-|       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| 2️⃣ | Criar um helm no keycloak para rodar local importando o arquivo realm-export.json que fica conforme imagem abaixo, para acessar (http://localhost:8081/admin/master/console/#/realms/mskeycloakrealm)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| 3️⃣ | Subir todos projetos começando pelo eureka, para acessar (http://localhost:8761), <br/>name: cursoms-eureka-user<br/> password: ecok-usr-eeuramssur<br/>Subir por ultimo o gateway                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| 4️⃣ | Obter o token com as informações que estão no seu keycloak conforme imagem abaixo utilizando o postman.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 5️⃣ | **Criar um Cliente**: `POST /clientes`  **Criar um Cartão**: `POST /cartoes` Exemplo imagem abaixo criando um cliente                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| 6️⃣ | Executar os outros endpoints                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| 7️⃣ | Acesso ao banco de dados em memoria H2, http://localhost:porta/h2-console<br/>Acesso ao swagger, dentro do eureka vc acessa a url do microserviço desejado e vai abrir uma url parecida com essa  http://desktop-7uk6l4e:2538/actuator/info voce substitue o /actuator/info por /swagger-ui.html                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Etapa | Descrição |
+|-------|-----------|
+| 1️⃣ | Executar o ambiente: criação da network e dos containers rabbitmq e keycloak. com a execução dos comandos abaixo : |
+|   | docker network create ms-network<br/>docker run --name ms-rabbitmq -p 5672:5672 -p 15672:15672 --network ms-network rabbitmq:3.9-management<br/>docker run -p 8081:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin --network ms-network --name mskeycloak quay.io/keycloak/keycloak:18.0.0 start-dev<br/> Criar o helm conforme imagem abaixo.<br/>Fazer o build dos arquivos dockerfile, Observação : precisa estar no diretorio do arquivo dockerfile<br/>Comandos : <br/>docker build --tag ms-eureka-... |
+| 2️⃣ | Criar um helm no keycloak para rodar local importando o arquivo realm-export.json que fica conforme imagem abaixo, para acessar (http://localhost:8081/admin/master/console/#/realms/mskeycloakrealm) |
+| 3️⃣ | Subir todos projetos começando pelo eureka, para acessar (http://localhost:8761), <br/>name: cursoms-eureka-user<br/> password: ecok-usr-eeuramssur<br/>Subir por ultimo o gateway |
+| 4️⃣ | Obter o token com as informações que estão no seu keycloak conforme imagem abaixo utilizando o postman. |
+| 5️⃣ | **Criar um Cliente**: `POST /clientes`  **Criar um Cartão**: `POST /cartoes` Exemplo imagem abaixo criando um cliente |
+| 6️⃣ | Executar os outros endpoints |
+| 7️⃣ | Acesso ao banco de dados em memoria H2, http://localhost:porta/h2-console<br/>Acesso ao swagger, dentro do eureka vc acessa a url do microserviço desejado e vai abrir uma url parecida com essa  http://desktop-7uk6l4e:2538/actuator/info voce substitue o /actuator/info por /swagger-ui.html |
 
-
-</p>
 <p align="center">
-<h4 align="center" style="font-weight: bold;">Keycloak Configuração para Docker</h4>
+<h5 style="font-weight: bold;">Keycloak Configuração para Docker</h5>
     <img src="keycloak-prod.png" alt="Keycloak Lo" width="800">
 </p>
 
 ---
 
+<a id="arquitetura"></a>
+# ⚙️ Arquitetura dos Microserviços
+
+| Módulo | Porta | Descrição |
+|--------|--------|-----------|
+| **eurekaserver** | 8761 | Registro de serviços centralizado (Service Discovery) |
+| **gateway** | 8080 | API Gateway com autenticação Keycloak |
+| **msclientes** | Aleatória | Cadastro e gestão de clientes |
+| **mscartoes** | Aleatória | Cadastro e emissão de cartões |
+| **msavaliadorcredito** | Aleatória | Análise e avaliação de crédito |
+
+Todos os serviços se registram no **Eureka** e são roteados pelo **Gateway**, que também gerencia a autenticação via **Keycloak**.  
+O **RabbitMQ** é responsável pela comunicação assíncrona entre os serviços, e o **H2 Database** é usado localmente para persistência em memória.
+
+---
+
+<a id="endpoints"></a>
 # 📡 API Endpoints
 
-## Clientes (`ClienteController`)
+<a id="msclientes"></a>
+## 🧍‍♂️ **msclientes** (`ClienteController`)
 Base: `/clientes`
 
 | Método | Rota | Corpo (JSON) | Descrição |
-|-------:|------|--------------|-----------|
+|:-------:|:------|:--------------|:-----------|
 | POST | `/clientes` | `Cliente` | Cadastra um novo cliente |
-| GET | `/clientes/{codigo}` | — | Consulta cliente por código |
-| DELETE | `/clientes/{codigo}` | — | Inativa o cliente (não deleta físico) |
+| GET | `/clientes/{cpf}` | - | Consulta cliente por CPF |
 
 **Exemplo `Cliente`**
 ```json
 {
   "nome": "Carlos da Silva",
   "cpf": "12345678900",
-  "email": "carlos.silva@email.com",
-  "endereco": "Rua das Flores, 120 - São Paulo"
+  "idade": 35,
+  "renda": 5000.00
 }
 ```
 
 ---
 
-## Produtos (`ProdutoController`)
-Base: `/produtos`
+<a id="mscartoes"></a>
+## 💳 **mscartoes** (`CartaoController`)
+Base: `/cartoes`
 
 | Método | Rota | Corpo (JSON) | Descrição |
-|-------:|------|--------------|-----------|
-| POST | `/produtos` | `Produto` | Cadastra um novo produto |
-| GET | `/produtos/{codigo}` | — | Consulta produto por código |
-| DELETE | `/produtos/{codigo}` | — | Inativa o produto (não deleta físico) |
+|:-------:|:------|:--------------|:-----------|
+| POST | `/cartoes` | `Cartao` | Cria um novo cartão |
+| GET | `/cartoes` | - | Lista todos os cartões disponíveis |
+| GET | `/cartoes/{renda}` | - | Lista cartões por faixa de renda |
 
-**Exemplo `Produto`**
+**Exemplo `Cartao`**
 ```json
 {
-  "nome": "Notebook Dell XPS 13",
-  "descricao": "Notebook 13'' i7 16GB RAM",
-  "valorUnitario": 8500.00,
-  "estoque": 20
+  "nome": "Cartão Visa Gold",
+  "bandeira": "VISA",
+  "limite": 5000.00
 }
 ```
 
 ---
 
-## Pedidos (`PedidoController`)
-Base: `/pedidos`
+<a id="msavaliadorcredito"></a>
+## 💰 **msavaliadorcredito** (`AvaliadorCreditoController`)
+Base: `/avaliacoes-credito`
 
 | Método | Rota | Corpo (JSON) | Descrição |
-|-------:|------|--------------|-----------|
-| POST | `/pedidos` | `NovoPedidoDTO` | Cria um novo pedido |
-| GET | `/pedidos/{codigo}` | — | Retorna detalhes do pedido |
-| POST | `/pedidos/pagamentos` | `AdicaoNovoPagamentoDTO` | Adiciona um novo pagamento ao pedido |
+|:-------:|:------|:--------------|:-----------|
+| POST | `/avaliacoes-credito` | `DadosAvaliacao` | Avalia o crédito do cliente |
+| GET | `/avaliacoes-credito/status-cliente?cpf={cpf}` | - | Consulta situação do cliente |
 
-**Exemplo `NovoPedidoDTO`**
+**Exemplo `DadosAvaliacao`**
 ```json
 {
-  "codigoCliente": 1,
-  "dadosPagamento": {
-    "metodo": "PIX"
-  },
-  "itens": [
-    { "codigoProduto": 1, "quantidade": 1, "valorUnitario": 8500.00 }
+  "cpf": "12345678900",
+  "renda": 5000.00
+}
+```
+
+**Exemplo resposta**
+```json
+{
+  "cartoesAprovados": [
+    {
+      "cartao": "Visa Gold",
+      "limiteAprovado": 2500.00
+    }
   ]
 }
 ```
 
-**Exemplo `AdicaoNovoPagamentoDTO`**
-```json
-{
-  "codigoPedido": 1058,
-  "dados": "chave-pagamento-gerada-pelo-sistema",
-  "tipoPagamento": "CREDIT"
-}
-```
+---
+
+<a id="auth"></a>
+# 🔐 Autenticação via Keycloak (Gateway)
+
+- Todas as requisições passam pelo **Gateway**, que valida o **Token JWT** emitido pelo **Keycloak**.  
+- O token é obtido via endpoint padrão do realm:
+  ```
+  POST http://localhost:8081/realms/mskeycloakrealm/protocol/openid-connect/token
+  ```
+- As permissões são controladas pelas **roles** atribuídas aos usuários no **Keycloak**.
 
 ---
 
-## Callback de Pagamento (`RecebimentoCallbackPagamentoController`)
-Base: `/pedidos/callback-pagamentos`
+<a id="execucao-docker"></a>
+# 🚀 Execução via Docker
 
-| Método | Rota | Corpo (JSON) | Descrição |
-|-------:|------|--------------|-----------|
-| POST | `/pedidos/callback-pagamentos` | `RecebimentoCallbackPagamentoDTO` | Webhook para atualizar status do pagamento |
-
-**Exemplo `RecebimentoCallbackPagamentoDTO`**
-```json
-{
-  "codigo": 1058,
-  "chavePagamento": "d5c2f33b-199a-48e5-91a1-82f3bb07e9b1",
-  "status": true,
-  "observacoes": "Pagamento confirmado via CREDIT"
-}
-```
+*(mantido com comandos originais e exemplos de build/run para cada microserviço)*
 
 ---
 
-## Faturamento / Bucket (`BucketController`)
-Base: `/bucket`
-
-| Método | Rota | Corpo | Descrição |
-|-------:|------|-------|-----------|
-| POST | `/bucket` | `multipart/form-data` | Envia arquivo para o bucket |
-| GET | `/bucket?filename=arquivo` | — | Retorna (redirect 301) para URL do arquivo |
-
----
-
+<a id="colaboradores"></a>
 # 🤝 Colaboradores
 
 <table>
@@ -275,6 +280,7 @@ Base: `/bucket`
 
 ---
 
+<a id="como-contribuir"></a>
 # 📫 Como Contribuir
 
 1. Faça um **fork** do projeto
@@ -294,12 +300,14 @@ Base: `/bucket`
 
 ---
 
+<a id="licenca"></a>
 # 📄 Licença
 
 Este projeto está sob a licença **MIT** — consulte o arquivo [LICENSE](../LICENSE) para mais detalhes.
 
 ---
 
+<a id="autor"></a>
 ### 🧠 Autor
 Desenvolvido com 💙 por **Waldir Escouto Pereira**  
 📍 Rio de Janeiro - Brasil  
