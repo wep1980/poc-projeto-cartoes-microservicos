@@ -153,7 +153,109 @@ O ciclo de execução do projeto rodando com docker:
 
 ---
 
+# 📡 API Endpoints
 
+## Clientes (`ClienteController`)
+Base: `/clientes`
+
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/clientes` | `Cliente` | Cadastra um novo cliente |
+| GET | `/clientes/{codigo}` | — | Consulta cliente por código |
+| DELETE | `/clientes/{codigo}` | — | Inativa o cliente (não deleta físico) |
+
+**Exemplo `Cliente`**
+```json
+{
+  "nome": "Carlos da Silva",
+  "cpf": "12345678900",
+  "email": "carlos.silva@email.com",
+  "endereco": "Rua das Flores, 120 - São Paulo"
+}
+```
+
+---
+
+## Produtos (`ProdutoController`)
+Base: `/produtos`
+
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/produtos` | `Produto` | Cadastra um novo produto |
+| GET | `/produtos/{codigo}` | — | Consulta produto por código |
+| DELETE | `/produtos/{codigo}` | — | Inativa o produto (não deleta físico) |
+
+**Exemplo `Produto`**
+```json
+{
+  "nome": "Notebook Dell XPS 13",
+  "descricao": "Notebook 13'' i7 16GB RAM",
+  "valorUnitario": 8500.00,
+  "estoque": 20
+}
+```
+
+---
+
+## Pedidos (`PedidoController`)
+Base: `/pedidos`
+
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/pedidos` | `NovoPedidoDTO` | Cria um novo pedido |
+| GET | `/pedidos/{codigo}` | — | Retorna detalhes do pedido |
+| POST | `/pedidos/pagamentos` | `AdicaoNovoPagamentoDTO` | Adiciona um novo pagamento ao pedido |
+
+**Exemplo `NovoPedidoDTO`**
+```json
+{
+  "codigoCliente": 1,
+  "dadosPagamento": {
+    "metodo": "PIX"
+  },
+  "itens": [
+    { "codigoProduto": 1, "quantidade": 1, "valorUnitario": 8500.00 }
+  ]
+}
+```
+
+**Exemplo `AdicaoNovoPagamentoDTO`**
+```json
+{
+  "codigoPedido": 1058,
+  "dados": "chave-pagamento-gerada-pelo-sistema",
+  "tipoPagamento": "CREDIT"
+}
+```
+
+---
+
+## Callback de Pagamento (`RecebimentoCallbackPagamentoController`)
+Base: `/pedidos/callback-pagamentos`
+
+| Método | Rota | Corpo (JSON) | Descrição |
+|-------:|------|--------------|-----------|
+| POST | `/pedidos/callback-pagamentos` | `RecebimentoCallbackPagamentoDTO` | Webhook para atualizar status do pagamento |
+
+**Exemplo `RecebimentoCallbackPagamentoDTO`**
+```json
+{
+  "codigo": 1058,
+  "chavePagamento": "d5c2f33b-199a-48e5-91a1-82f3bb07e9b1",
+  "status": true,
+  "observacoes": "Pagamento confirmado via CREDIT"
+}
+```
+
+---
+
+## Faturamento / Bucket (`BucketController`)
+Base: `/bucket`
+
+| Método | Rota | Corpo | Descrição |
+|-------:|------|-------|-----------|
+| POST | `/bucket` | `multipart/form-data` | Envia arquivo para o bucket |
+| GET | `/bucket?filename=arquivo` | — | Retorna (redirect 301) para URL do arquivo |
 
 ---
 
