@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: eurekaserver
+  security:
+    basic:
+      enabled: true
+    user:
+      name: cursoms-eureka-user
+      password: ecok-usr-eeuramssur
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      # ADICIONE credenciais aqui para a replicação (peer)
+      defaultZone: "http://cursoms-eureka-user:ecok-usr-eeuramssur@localhost:8761/eureka/"
+  instance:
+    prefer-ip-address: true
